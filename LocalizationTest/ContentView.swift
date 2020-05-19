@@ -25,8 +25,11 @@ struct ContentView: View {
                 // Works, also uses environment properties, but doesn't work in preview (yet?)
                 Text(L10n.ContentView.nameAge(model.name, model.age))
 
-                // Works, uses Text directly, so a different table (and bundle) can be specified)
-                Button(action: {}, label: { L10n.ContentView.Button(model.name) })
+                // Works, uses Text directly, so a different table (and bundle) can be specified
+                Button(action: {}, label: { L10n.ContentView.buttonOne(model.name) })
+
+                // Works, wraps result in a struct containing needed info, so the implementation has the freedom to choose how to use the string
+                Button(action: {}, label: { Text(L10n.ContentView.buttonTwo(model.name)) })
 
             }.font(.footnote)
 
@@ -59,9 +62,30 @@ struct L10n {
             "ContentView.nameAge \(s1) \(i2)"
         }
 
-        static func Button(_ s1: String) -> Text {
+        static func buttonOne(_ s1: String) -> Text {
             Text("ContentView.button \(s1)", tableName: "Another", bundle: Bundle(for: BundleToken.self))
         }
+
+        static func buttonTwo(_ s1: String) -> LocalizedStringSet {
+            LocalizedStringSet(key: "ContentView.button \(s1)", tableName: "Another", bundle: Bundle(for: BundleToken.self))
+        }
+    }
+
+    struct LocalizedStringSet {
+        let key: LocalizedStringKey
+        let tableName: String?
+        let bundle: Bundle?
+
+        var asText: Text {
+            Text(key, tableName: tableName, bundle: bundle)
+        }
+    }
+}
+
+// Initializer to use LocalizedStringSet
+extension Text {
+    init(_ set: L10n.LocalizedStringSet) {
+        self.init(set.key, tableName: set.tableName, bundle: set.bundle)
     }
 }
 

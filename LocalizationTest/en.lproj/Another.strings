@@ -1,0 +1,9 @@
+/* 
+  Another.strings
+  LocalizationTest
+
+  Created by K Rummler on 19/05/2020.
+  Copyright © 2020 KevinR. All rights reserved.
+*/
+
+"ContentView.button %@" = "Button for %1$@";
